@@ -1,0 +1,66 @@
+
+
+Ale niech będzie. Wiecie czym jest bufor kołowy
+(https://pl.wikipedia.org/wiki/Bufor_cykliczny)?
+
+Waszym zadaniem będzie zaimplementowanie trzech klas w przestrzeni nazw
+o nazwie waszych inicjałów (np. w moim przypadku namespace jz):
+
+    *  CircBuffBase - klasa wirtualna, interfejs bufora kołowego,
+zawierająca:
+
+     * dynamicznie zaalokowaną tablicę liczb typu int (nie std::vector!)
+odpowiedniego rozmiaru przekazywanego w konstruktorze
+     * odpowiednie pola potrzebne do bufora kołowego (head, tail...
+więcej nie podpowiadam ;))
+     * pole "name" typu string, które będzie nazwą odpowiedniego bufora
+(NonOverwritingCircBuff/OverwritingCircBuff) w celu wypisywania ładnych
+wiadomości w terminalu (czysty debugging)
+     * odpowiedni konstruktor i destruktor
+
+    * metody (wirtualne lub nie - Waszym zadaniem będzie ogarnięcie jaka
+ma być jaka):
+
+     * bool push(int value) - dodaje do bufora zmienną i w przypadku
+powodzenia zwraca true, w przeciwnym razie false
+     * bool pop(int &value) - wyciąga z bufora zmienną i w przypadku
+powodzenia zwraca true, w przeciwnym razie false
+     * bool isEmpty()
+     * bool isFull()
+     * void printBuff() - wypisuje "The <name> buffer is: " oraz "empty" w
+przypadku pełnego bufora lub zawartość bufora (np. "3, 4, 5, 6") w
+przypadku niepustego bufora
+
+    * OverwritingCircBuff - klasa dziedzicząca po CircBuffBase, która:
+
+     * w przypadku dodawania elementów do pełnego bufora NADPISUJE
+wartości najstarsze
+
+    * NonOverwritingCircBuff - klasa dziedzicząca po CircBuffBase, która:
+
+
+     * w przypadku pełnego bufora NIE NADPISUJE elementów
+
+Dodatkowo, dla debuggingu, metody typu push() i pop() powinny wypisywać
+odpowiednie komunikaty typu "Pushing <value> to <name> buffer" lub
+"Poping <value> from the <name> buffer" lub "Nothing to pop from the
+<name> buffer" itd.
+
+Jakiego typu mają być odpowiednie pola i metody (public, private,
+protected) zależy od Was, ale ma to być "idiotoodporne" czyli
+zaimplementowane tak, jak powinno być. Dodatkowo w klasach pochodnych
+chcemy reimplementować jak najmniej kodu - wykorzystajcie dziedziczenie
+najefektywniej jak się da.
+
+Jeśli stwierdzicie, że jest to za trudne - nie ma problemu, nie było
+tematu. Jeśli to zrobicie i mi się spodoba rozwiązanie - zaliczę Wam
+lab na 5.0 bez potrzeby pisania kolosa i w sumie projekt na 3.0
+(możecie zostawić tę ocenę lub zrobić osobny projekt na wyższą
+ocenę).
+
+Jeśli jednak zrobicie to zadanie (obaj macie robić osobno!), to jeśli
+później (już wspólnie) zamienicie te klasy na klasy szablonowe
+(template), żeby do bufora dało się dodawać dowolne elementy ORAZ
+napiszecie jakieś proste testy jednostkowe do tych klas (jak? np.
+Unity, GoogleTest), zaliczę Wam tym projekt również na 5.0.
+
