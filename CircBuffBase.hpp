@@ -3,8 +3,10 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+
 namespace kl
 {
+    template <class Tbuffer>
     class CircBuffBase
     {
     private:
@@ -12,15 +14,18 @@ namespace kl
         std::string m_name;
         int m_head{};
         int m_tail{-1};
-        int *m_number_arr;
+        Tbuffer *m_number_arr;
         int m_elementcount{};
 
     protected:
         CircBuffBase(int size, const std::string &name);
-        void pushNumber_arr(int value)
+        void pushNumber_arr(Tbuffer value)
         {
             m_number_arr[m_tail] = value;
-            m_elementcount++;
+            if (!isFull())
+            {
+                m_elementcount++;
+            }
         }
         void move_head()
         {
@@ -33,8 +38,8 @@ namespace kl
 
     public:
         virtual ~CircBuffBase();
-        virtual bool push(int value) = 0;
-        bool pop(int &value);
+        virtual bool push(Tbuffer value) = 0;
+        bool pop(Tbuffer &value);
         bool isEmpty() const;
         bool isFull() const;
         void printBuff() const;
@@ -52,18 +57,19 @@ namespace kl
         {
             return m_head;
         }
-        int getTail() const 
+        int getTail() const
         {
             return m_tail;
         }
-        int getCount() const 
+        int getCount() const
         {
             return m_elementcount;
         }
     };
 }
 
-kl::CircBuffBase::CircBuffBase(int size, const std::string &name)
+template <class Tbuffer>
+kl::CircBuffBase<Tbuffer>::CircBuffBase(int size, const std::string &name)
     : m_size(size), m_name(name)
 {
     try
@@ -73,28 +79,31 @@ kl::CircBuffBase::CircBuffBase(int size, const std::string &name)
             throw std::invalid_argument("Size of buffer can't be smaller than 1 \n Making default sized buffer(5)");
         }
 
-        m_number_arr = new int[m_size];
+        m_number_arr = new Tbuffer[m_size];
     }
     catch (std::invalid_argument &error)
     {
         std::cerr << error.what() << std::endl
                   << std::endl;
-        m_number_arr = new int[5];
+        m_number_arr = new Tbuffer[5];
     }
 }
 
-kl::CircBuffBase::~CircBuffBase()
+template <class Tbuffer>
+kl::CircBuffBase<Tbuffer>::~CircBuffBase()
 {
     delete[] m_number_arr;
     std::cout << "DESTRUCTOR of base" << std::endl;
 }
 
-void kl::CircBuffBase::print_name() const
+template <class Tbuffer>
+void kl::CircBuffBase<Tbuffer>::print_name() const
 {
     std::cout << "Buffer name is: " << m_name << std::endl;
 }
 
-void kl::CircBuffBase::printBuff() const
+template <class Tbuffer>
+void kl::CircBuffBase<Tbuffer>::printBuff() const
 {
     if (isEmpty())
     {
@@ -104,25 +113,28 @@ void kl::CircBuffBase::printBuff() const
     else
     {
         std::cout << "The " << m_name << " is: < ";
-        for(int i = 0; i < m_elementcount; ++i)
+        for (int i = 0; i < m_elementcount; ++i)
         {
-            std::cout << m_number_arr[(m_head+i)%m_size] << " ";
+            std::cout << m_number_arr[(m_head + i) % m_size] << " ";
         }
         std::cout << ">" << std::endl;
     }
 }
 
-bool kl::CircBuffBase::isEmpty() const
+template <class Tbuffer>
+bool kl::CircBuffBase<Tbuffer>::isEmpty() const
 {
     return m_elementcount == 0;
 }
 
-bool kl::CircBuffBase::isFull() const
+template <class Tbuffer>
+bool kl::CircBuffBase<Tbuffer>::isFull() const
 {
     return m_elementcount == m_size;
 }
 
-bool kl::CircBuffBase::pop(int &value)
+template <class Tbuffer>
+bool kl::CircBuffBase<Tbuffer>::pop(Tbuffer &value)
 {
     if (isEmpty())
     {
@@ -132,6 +144,9 @@ bool kl::CircBuffBase::pop(int &value)
     value = m_number_arr[m_head];
     m_head = (m_head + 1) % m_size;
     std::cout << "Popping " << value << " from " << m_name << std::endl;
-    m_elementcount--;
+    if (!isEmpty())
+    {
+        m_elementcount--;
+    }
     return true;
 }
