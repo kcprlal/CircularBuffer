@@ -5,26 +5,20 @@
 int main()
 {
 
-    int value{};
+    std::string value{};
 
     std::cout << std::endl
               << std::endl;
     int size{3};
 
-    kl::OverwritingCircBuff<int> object(size);
-    object.push(1);
-    object.push(2);
-    object.push(3);
-    object.push(4);
-    object.push(5);
-    object.push(6);
-    object.push(1);
-    object.push(2);
-    object.push(3);
-    object.push(4);
-    object.push(5);
-    object.push(6);
+    kl::NonOverwritingCircBuff<std::string> object(size);
+    object.push("to");
+    object.push("jest");
+    object.push("overw");
+    object.push("bufor");
     object.printBuff();
-
+    object.pop(value);
+    std::cout<<value<<std::endl;
+    object.printBuff();
     return 0;
 }
